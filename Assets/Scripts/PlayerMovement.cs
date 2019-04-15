@@ -52,8 +52,28 @@ public class PlayerMovement : MonoBehaviour
         {
             isJumping = false;
         }
-        movement.x = Input.GetAxis("Horizontal") * speed;
-        rb.velocity = new Vector2(movement.x, rb.velocity.y);
+        if ((Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)))
+        {
+            movement.x = Input.GetAxis("Horizontal") * speed;
+        }
+        else
+        {
+            movement.x = rb.velocity.x;
+        }
+        if (isGrounded == true)
+        {
+            rb.velocity = new Vector2(movement.x, rb.velocity.y);
+        }
+        else
+        {
+            if (rb.velocity.x > movement.x && Input.GetKey(KeyCode.A))
+            {
+                rb.velocity += new Vector2(movement.x, 0.0f);
+            }else if(rb.velocity.x < movement.x && Input.GetKey(KeyCode.D))
+            {
+                rb.velocity += new Vector2(movement.x, 0.0f);
+            }
+        }
         if(crosshair.transform.position.x >= transform.position.x)
         {
             sprite.flipX = false;

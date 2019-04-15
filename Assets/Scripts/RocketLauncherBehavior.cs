@@ -8,6 +8,7 @@ public class RocketLauncherBehavior : MonoBehaviour
     public SpriteRenderer sprite;
     public Object rocket;
     private GameObject crosshair;
+    private Rigidbody2D player;
 
     float FindAngle()
     {
@@ -23,12 +24,12 @@ public class RocketLauncherBehavior : MonoBehaviour
         GameObject rocketInstance = Instantiate(rocket, transform.position, transform.rotation) as GameObject;
         if (sprite.flipX == false)
         {
-            rocketInstance.GetComponent<Rigidbody2D>().AddForce(rocketInstance.transform.right * rocketSpeed);
+            rocketInstance.GetComponent<Rigidbody2D>().AddForce(rocketInstance.transform.right * (rocketSpeed + player.velocity.magnitude));
         }
         else
         {
             rocketInstance.GetComponent<SpriteRenderer>().flipX = true;
-            rocketInstance.GetComponent<Rigidbody2D>().AddForce(rocketInstance.transform.right * -rocketSpeed);
+            rocketInstance.GetComponent<Rigidbody2D>().AddForce(rocketInstance.transform.right * (-rocketSpeed - player.velocity.magnitude));
         }
     }
 
@@ -37,6 +38,7 @@ public class RocketLauncherBehavior : MonoBehaviour
     {
         sprite = GetComponent<SpriteRenderer>();
         crosshair = GameObject.FindGameObjectWithTag("Crosshair");
+        player = transform.parent.GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
