@@ -6,7 +6,6 @@ public class PlayerMovement : MonoBehaviour
 {
     public float speed;             //horizontal speed of player
     public float jForce;
-    public float circleRadius;
     public float jumpTime;
     public float jumpTimeCounter;
     public bool isJumping;
@@ -29,14 +28,14 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(isGrounded == true && Input.GetKeyDown(KeyCode.W))
+        if(isGrounded == true && (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Space)))
         {
             isJumping = true;
             jumpTimeCounter = jumpTime;
             rb.velocity = new Vector2(rb.velocity.x, jForce);
         }
 
-        if(isJumping == true && Input.GetKey(KeyCode.W))
+        if(isJumping == true && (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.Space)))
         {
             if (jumpTimeCounter > 0)
             {
@@ -48,7 +47,7 @@ public class PlayerMovement : MonoBehaviour
                 isJumping = false;
             }
         }
-        if (Input.GetKeyUp(KeyCode.W))
+        if (Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.Space))
         {
             isJumping = false;
         }
@@ -68,10 +67,16 @@ public class PlayerMovement : MonoBehaviour
         {
             if (rb.velocity.x > movement.x && Input.GetKey(KeyCode.A))
             {
-                rb.velocity += new Vector2(movement.x, 0.0f);
+                if (!(movement.x / Mathf.Abs(movement.x) == 1.0f))
+                {
+                    rb.velocity += new Vector2(movement.x, 0.0f);
+                }
             }else if(rb.velocity.x < movement.x && Input.GetKey(KeyCode.D))
             {
-                rb.velocity += new Vector2(movement.x, 0.0f);
+                if (!(movement.x / Mathf.Abs(movement.x) == -1.0f))
+                {
+                    rb.velocity += new Vector2(movement.x, 0.0f);
+                }
             }
         }
         if(crosshair.transform.position.x >= transform.position.x)

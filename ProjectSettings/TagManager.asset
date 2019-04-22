@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - Crosshair
+  - WeakBox
+  - StrongBox
   layers:
   - Default
   - TransparentFX
@@ -16,7 +18,7 @@ TagManager:
   - 
   - Ground
   - Projectile
-  - 
+  - Box
   - 
   - 
   - 

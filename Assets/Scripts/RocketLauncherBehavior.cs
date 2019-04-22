@@ -22,6 +22,7 @@ public class RocketLauncherBehavior : MonoBehaviour
     void Fire()
     {
         GameObject rocketInstance = Instantiate(rocket, transform.position, transform.rotation) as GameObject;
+        rocketInstance.GetComponent<SpriteRenderer>().sortingOrder = sprite.sortingOrder - 1;
         if (sprite.flipX == false)
         {
             rocketInstance.GetComponent<Rigidbody2D>().AddForce(rocketInstance.transform.right * (rocketSpeed + player.velocity.magnitude));
@@ -47,6 +48,14 @@ public class RocketLauncherBehavior : MonoBehaviour
         Transform parent = transform.parent;
         SpriteRenderer pSprite = parent.GetComponent<SpriteRenderer>();
         sprite.flipX = pSprite.flipX;
+        if(sprite.flipX == true)
+        {
+            sprite.sortingOrder = -1;
+        }
+        else
+        {
+            sprite.sortingOrder = 2;
+        }
         transform.eulerAngles = new Vector3(0.0f, 0.0f, FindAngle());
 
         if (Input.GetButtonDown("Fire1"))
