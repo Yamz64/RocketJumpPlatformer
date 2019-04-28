@@ -9,6 +9,7 @@ public class RocketLauncherBehavior : MonoBehaviour
     public Object rocket;
     private GameObject crosshair;
     private Rigidbody2D player;
+    private AudioSource rocketLaunch;
 
     float FindAngle()
     {
@@ -40,6 +41,7 @@ public class RocketLauncherBehavior : MonoBehaviour
         sprite = GetComponent<SpriteRenderer>();
         crosshair = GameObject.FindGameObjectWithTag("Crosshair");
         player = transform.parent.GetComponent<Rigidbody2D>();
+        rocketLaunch = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -60,6 +62,7 @@ public class RocketLauncherBehavior : MonoBehaviour
 
         if (Input.GetButtonDown("Fire1"))
         {
+            rocketLaunch.Play();
             Fire();
         }
     }

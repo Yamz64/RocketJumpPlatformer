@@ -8,17 +8,28 @@ public class PlayerMovement : MonoBehaviour
     public float jForce;
     public float jumpTime;
     public float jumpTimeCounter;
+    public float waterDrag;
     public bool isJumping;
     public bool isGrounded;
+    public bool inWater;
     public Transform crosshair;
     public Vector2 movement;
+    public Vector2 checkpoint;
     private Animator anim;          //animator component attached to player
     private SpriteRenderer sprite;  //SpriteRenderer component attached to player
     private Rigidbody2D rb;         //Rigidbody2D component attached to player
 
+    public void Die()
+    {
+        transform.position = checkpoint;
+        rb.velocity = Vector2.zero;
+        Camera.main.transform.position = new Vector3(-1.93f, -2.77f, -10.0f);
+    }
+
     // Start is called before the first frame update
     void Start()
     {
+        checkpoint = new Vector2(-16.725f, -10.355f);
         crosshair = GameObject.FindGameObjectWithTag("Crosshair").GetComponent<Transform>();
         anim = GetComponent<Animator>();            //anim is set equal to the attached Animator component
         sprite = GetComponent<SpriteRenderer>();    //sprite is set equal to the attached SpriteRenderer component
@@ -28,6 +39,20 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(inWater != true)
+        {
+            rb.gravityScale = 3.0f;
+            waterDrag = 0.0f;
+            jumpTime = .35f;
+            anim.speed = 1.0f;
+        }
+        else
+        {
+            rb.gravityScale = 1.0f;
+            waterDrag = 5.0f;
+            jumpTime = .7f;
+            anim.speed = .5f;
+        }
         if(isGrounded == true && (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Space)))
         {
             isJumping = true;
@@ -54,6 +79,14 @@ public class PlayerMovement : MonoBehaviour
         if ((Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)))
         {
             movement.x = Input.GetAxis("Horizontal") * speed;
+            if(movement.x/Mathf.Abs(movement.x) == 1.0f)
+            {
+                movement.x -= waterDrag * Mathf.Abs(Input.GetAxis("Horizontal"));
+            }
+            else
+            {
+                movement.x += waterDrag * Mathf.Abs(Input.GetAxis("Horizontal"));
+            }
         }
         else
         {
@@ -82,10 +115,20 @@ public class PlayerMovement : MonoBehaviour
         if(crosshair.transform.position.x >= transform.position.x)
         {
             sprite.flipX = false;
+            BoxCollider2D[] hitboxes = GetComponents<BoxCollider2D>();
+            hitboxes[0].offset = new Vector2(.01f, hitboxes[0].offset.y);
+            hitboxes[1].offset = new Vector2(.01f, hitboxes[1].offset.y);
+            hitboxes[2].offset = new Vector2(.0525f, hitboxes[2].offset.y);
+            hitboxes[3].offset = new Vector2(-.0325f, hitboxes[3].offset.y);
         }
         else
         {
             sprite.flipX = true;
+            BoxCollider2D[] hitboxes = GetComponents<BoxCollider2D>();
+            hitboxes[0].offset = new Vector2(-.01f, hitboxes[0].offset.y);
+            hitboxes[1].offset = new Vector2(-.01f, hitboxes[1].offset.y);
+            hitboxes[2].offset = new Vector2(-.0525f, hitboxes[2].offset.y);
+            hitboxes[3].offset = new Vector2(.0325f, hitboxes[3].offset.y);
         }
         if (Input.GetKey(KeyCode.D))
         {
@@ -102,10 +145,16 @@ public class PlayerMovement : MonoBehaviour
     }
     private void OnTriggerStay2D(Collider2D other)
     {
-        isGrounded = true;
+        if (other.tag != "Water")
+        {
+            isGrounded = true;
+        }
     }
     private void OnTriggerExit2D(Collider2D other)
     {
-        isGrounded = false;
+        if (other.tag != "Water")
+        {
+            isGrounded = false;
+        }
     }
 }
